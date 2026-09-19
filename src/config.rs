@@ -50,4 +50,15 @@ impl AppConfig {
 
         Ok(config_dir)
     }
+
+    pub fn db_path() -> Result<PathBuf> {
+        let data_dir = dirs::data_dir()
+            .context("cannot resolve system data directory")?
+            .join("news-tui");
+
+        std::fs::create_dir_all(&data_dir)
+            .with_context(|| format!("cannot create {}", data_dir.display()))?;
+
+        Ok(data_dir.join("news.db"))
+    }
 }
