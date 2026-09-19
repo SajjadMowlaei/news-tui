@@ -4,6 +4,7 @@ use news_tui::core::Feed;
 use news_tui::fetcher::Fetcher;
 use news_tui::parser::rss;
 use news_tui::storage::repository::Repository;
+use news_tui::ui::{app::App, run};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -35,12 +36,9 @@ async fn main() -> Result<()> {
         }
     }
 
-    let all = repo.list_articles(None)?;
-    println!("\n─── Latest articles ───");
-    for a in all.iter().take(5) {
-        println!("• {}", a.title);
-    }
-    println!("... total: {} articles in DB", all.len());
+    let articles = repo.list_articles(None)?;
+    let mut app = App::new(articles);
+    run(&mut app)?;
 
     Ok(())
 }
